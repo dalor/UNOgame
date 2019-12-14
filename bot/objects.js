@@ -16,10 +16,7 @@ class Card {
     }
     repr() {
         return {
-            id: this.id,
-            content: this.content,
-            type: this.type,
-            color: this.color
+            id: this.light
         }
     }
 }
@@ -59,10 +56,10 @@ class Game {
     constructor(dict) {
         this.id = dict.id
         this.now = dict.now || 0
-        this.last_card = dict.last_card ? new Card(dict.last_card) : null;
-        this.used_cards = dict.used_cards ? dict.used_cards.map(card=>new Card(card)) : [];
-        this.cards = dict.cards ? dict.cards.map(id=>this.res_card_id(id)): [];  
-        this.possible_cards = dict.possible_cards ? dict.possible_cards.map(id=>this.res_card_id(id)): [];
+        this.last_card = dict.last_card ? new Card(this.res_card_id(dict.last_card.id)) : null;
+        this.used_cards = dict.used_cards ? dict.used_cards.map(card=>new Card(this.res_card_id(card.id))) : [];
+        this.cards = dict.cards ? dict.cards.map(card=>new Card(this.res_card_id(card.id))): [];  
+        this.possible_cards = dict.possible_cards ? dict.possible_cards.map(card=>new Card(this.res_card_id(card.id))): [];
         this.players = dict.players ? dict.players.map(pl => new Player(pl)): [];
         this.turn = dict.turn || 1 // 1 | -1
         this.winner = dict.winner? dict.winner : 0;   //1 | 0
@@ -70,7 +67,8 @@ class Game {
     }
     res_card_id(id)
     {
-      
+        const i = card_deck.findIndex(card=> card.light == id);
+       return card_deck.slice(i,i+1)[0];
     }
     now_player() {
         return this.players[this.now]
@@ -80,13 +78,13 @@ class Game {
         return {
             id: this.id,
             now: this.now,
-            last_card: JSON.stringify(this.last_card),
-            used_cards: JSON.stringify(this.used_cards),
-            cards: this.cards,
-            possible_cards: JSON.stringify(this.possible_cards),
-            players: this.players, // ? this.players.map((pl) => pl.repr()): null,
+            last_card: JSON.stringify(this.last_card.repr()),
+            used_cards: JSON.stringify(this.used_cards.map(card=> card.repr())),
+            cards: JSON.stringify(this.cards.map(card=> card.repr())),
+            possible_cards: JSON.stringify(this.possible_cards.map(card=> card.repr())),
+            players: JSON.stringify(this.players.map(player=> player.repr())), // ? this.players.map((pl) => pl.repr()): null,
             turn: this.turn,
-            ability: this.last_card.content,
+            ability: JSON.stringify(this.last_card.content),
             winner: this.winner
         }
     }
