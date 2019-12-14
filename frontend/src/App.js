@@ -9,8 +9,8 @@ class App extends Component {
     render() {
         const App = () => (
             <div id = {'app'}>
-                {!this.props.isLogin ?
-                    <Login/> :
+                {//!this.props.isLogin ?
+                    //<Login/> :
                     <Menu/>
                 }
             </div>

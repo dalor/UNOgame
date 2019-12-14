@@ -18,10 +18,6 @@ class Menu extends Component {
         autoBind(this);
     }
 
-    componentDidMount() {
-
-    }
-
     onNewGameClick(){
         this.props.dispatch(menuActions.newGameChosen());
     }
@@ -64,7 +60,7 @@ class Menu extends Component {
         return(
             <div id = {'menu'}>
                 <Header/>
-                {this.props.gameChosen ?
+                {!this.props.gameChosen ?
                     <Game/> :
                     this.props.newGameChosen ?
                         <NewGame/>:
@@ -81,7 +77,7 @@ class Menu extends Component {
 
 function mapStateToProps(state) {
     return{
-        userInfo: loginSelectors.getUser(state).first_name,
+        userInfo: loginSelectors.getUser(state),
         gameChosen: menuSelectors.getGame(state),
         newGameChosen: menuSelectors.getNewGame(state),
         continueChosen: menuSelectors.getLoadGame(state),

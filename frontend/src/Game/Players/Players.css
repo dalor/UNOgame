@@ -1,0 +1,7 @@
+#players{
+    width: 20%;
+    height: 70%;
+    display: inline-block;
+    outline: 1px black solid;
+    vertical-align: top;
+}
