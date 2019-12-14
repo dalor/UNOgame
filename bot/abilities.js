@@ -16,15 +16,17 @@ const abilities =
                } else {
                    prev = turn
                }
-                 for(let card in game.players[prev])
+               console.log(game.now, prev);
+               console.log('Checking honst:', game.players[prev]);
+                 for(let card of game.players[prev].cards)
                  {
+                    console.log('His', card.type, 'Color', game.last_card.color);
                      if(card.type == game.last_card.color)
                      {
                         game.players[prev].cards = game.players[prev].cards.concat(game.get_some_cards(4));
-                        game.players[prev].cards.push(Object.assign({},game.last_card));
-                        game.last_card = game.used_cards.splice(game.used_cards.length-1,1)[0];
                         result.bluffed = true;
-                        break;
+                        console.log("Trued");
+                        return null;
                      }
                  }
                  game.now_player().cards = game.now_player().cards.concat(game.get_some_cards(6));
@@ -40,6 +42,7 @@ const abilities =
     'reverse':  (game)=>
     {
        game.turn*=-1;
+       if(game.players.length == 2) game.next();
        return null;
     },
     'draw':  ()=>
@@ -51,17 +54,14 @@ const abilities =
           return null;
        }
     },
-    'skip':  ()=>
+    'skip':  (game)=>
     {
-       return (game)=>
-       {
           game.next();
           return null;
-       }
-      },
+    },
     'color':  ()=>
     {
-      return null;
+       return null;
     },
     'simple': (game)=>
     {

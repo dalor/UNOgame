@@ -18,7 +18,8 @@ class Card {
         return {
             id: this.id,
             content: this.content,
-            type: this.type
+            type: this.type,
+            color: this.color
         }
     }
 }
@@ -60,14 +61,17 @@ class Game {
         this.now = dict.now || 0
         this.last_card = dict.last_card ? new Card(dict.last_card) : null;
         this.used_cards = dict.used_cards ? dict.used_cards.map(card=>new Card(card)) : [];
-        this.cards = dict.cards ? dict.cards.map(card=>new Card(card)): [];  
-        this.possible_cards = dict.possible_cards ? dict.possible_cards.map(card=>new Card(card)): []; 
+        this.cards = dict.cards ? dict.cards.map(id=>this.res_card_id(id)): [];  
+        this.possible_cards = dict.possible_cards ? dict.possible_cards.map(id=>this.res_card_id(id)): [];
         this.players = dict.players ? dict.players.map(pl => new Player(pl)): [];
         this.turn = dict.turn || 1 // 1 | -1
         this.winner = dict.winner? dict.winner : 0;   //1 | 0
         this.ability = abilities[dict.ability] ? abilities[dict.ability]() : null;
     }
-
+    res_card_id(id)
+    {
+      
+    }
     now_player() {
         return this.players[this.now]
     }
@@ -78,9 +82,9 @@ class Game {
             now: this.now,
             last_card: JSON.stringify(this.last_card),
             used_cards: JSON.stringify(this.used_cards),
-            cards: JSON.stringify(this.cards),
+            cards: this.cards,
             possible_cards: JSON.stringify(this.possible_cards),
-            players: JSON.stringify(this.players), // ? this.players.map((pl) => pl.repr()): null,
+            players: this.players, // ? this.players.map((pl) => pl.repr()): null,
             turn: this.turn,
             ability: this.last_card.content,
             winner: this.winner
@@ -102,16 +106,13 @@ class Game {
     }
     next(turns = 1) {
         const turn = this.now + turns * this.turn
-        console.log('TUrn',turn);
         if (turn < 0) {
             this.now = this.players.length + turn
         } else if (turn >= this.players.length){
             this.now = turn - this.players.length
         } else {
-            console.log('Here now');
             this.now = turn
         }
-        console.log('Now', this.now);
     }
 
     shuffle(array) {
@@ -177,7 +178,14 @@ class Game {
         });
         this.players = this.shuffle(this.players);
         this.now = this.getRandomInt(0, this.players.length-1);
-        this.last_card = this.cards.splice(this.getRandomInt(0,this.cards.length-1),1)[0];
+        let random_int;
+        do
+        {
+            random_int = this.getRandomInt(0,this.cards.length-1);
+            this.last_card = this.cards.slice(random_int,random_int+1)[0];
+        }
+        while(this.last_card.is_special());
+        this.cards.splice(random_int,1);
         return this.end_turn();
     }
     add_possible()
@@ -234,9 +242,9 @@ class Game {
        console.log('Put card:', card);
        let content = card.is_special() ? card.content : 'simple';
        if(this.check_possible(card))
-       {
-           this.ability = abilities[content](this); //!
-           this.drop(this.now_player().remove_card(card));
+       {   //!
+        this.drop(this.now_player().remove_card(card));
+           this.ability = abilities[content](this);
            return this.end_turn();
        }
        else throw new Error('Put away your card!');
@@ -246,23 +254,27 @@ class Game {
         let result = {};
         console.log(this.ability);
         this.ability = this.ability(this,check_honest, result);
-        return Object.assign({},this.end_turn(), result);
+        this.end_turn(result.bluffed == true ? false : true);
+        console.log('Hm',!result.bluffed);
+        return Object.assign({}, result);
     }
     set_color(color)
     {
         this.last_card.color = color;
         return Object.assign({},{changed_color: color},this.end_turn());
     }
-    end_turn()
-    {   if((this.last_card.content == 'four' || this.last_card.content == 'color') && !this.last_card.color)
+    end_turn(next_step = true)
+    
+    {  
+         if((this.last_card.content == 'four' || this.last_card.content == 'color') && !this.last_card.color)
     {
         console.log('Not added possible');
         return {game: this, change_color: true};
     }
-    console.log('Here');
-        this.next();
+        console.log('Here', next_step);
+        if(next_step) {console.log('Next');this.next();}
         this.add_possible();
-        let return_object = Object.assign({}, this.check_over(), this.check_winner(), {game: this.repr()});
+        let return_object = Object.assign({}, this.check_over(), this.check_winner(), {game: this});
         return return_object;
     }
     pass()
