@@ -43,21 +43,12 @@ export default function reduce(state = initialState, action = {}) {
                 LoadGame: false
             });
         }
-        case types.GAME_CHOSEN: {
-            return state.merge({
-                CurrentGame: action.game
-            });
-        }
         default:
             return state;
     }
 }
 
 //selectors
-export function getGame(state) {
-    return state.menu.CurrentGame;
-}
-
 export function getNewGame(state) {
     return state.menu.NewGame;
 }

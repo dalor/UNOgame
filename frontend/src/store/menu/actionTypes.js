@@ -6,4 +6,3 @@ export const NEW_GAME_CLOSE = 'NEW_GAME_CLOSE';
 export const JOIN_CLOSE = 'JOIN_CLOSE';
 export const LOAD_GAME_CLOSE = 'LOAD_GAME_CLOSE';
 
-export const GAME_CHOSEN = 'GAME_CHOSEN';

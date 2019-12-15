@@ -3,6 +3,7 @@ import Game from "../Game/Game";
 import './Menu.css';
 import * as loginSelectors from '../store/login/reducer';
 import * as menuSelectors from '../store/menu/reducer';
+import * as gameSelectors from '../store/game/reducer';
 import * as menuActions from '../store/menu/actions';
 import { connect } from 'react-redux';
 import autoBind from "react-autobind";
@@ -60,7 +61,7 @@ class Menu extends Component {
         return(
             <div id = {'menu'}>
                 <Header/>
-                {!this.props.gameChosen ?
+                {this.props.gameChosen !== undefined ?
                     <Game/> :
                     this.props.newGameChosen ?
                         <NewGame/>:
@@ -78,7 +79,7 @@ class Menu extends Component {
 function mapStateToProps(state) {
     return{
         userInfo: loginSelectors.getUser(state),
-        gameChosen: menuSelectors.getGame(state),
+        gameChosen: gameSelectors.getGame(state),
         newGameChosen: menuSelectors.getNewGame(state),
         continueChosen: menuSelectors.getLoadGame(state),
         joinChosen:menuSelectors.getJoin(state)
