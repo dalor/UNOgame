@@ -16,7 +16,7 @@ var server = http.createServer(function(request, response) {
   });
   let clients = [];
 
-  save_connection(data, conn)
+  function save_connection(data, conn)
   {
      for(let i in clients)
      {
@@ -32,13 +32,13 @@ var server = http.createServer(function(request, response) {
        }
      }
   }
-  check_in_game(data)
+  function check_in_game(data)
   {
     let games = await storage.load_by_id(data.id);
     return games.length != 0;
   }
 
-  create_game(data, conn)
+  function create_game(data, conn)
   {
     
     if(check_in_game(data)) {conn.sendUTF8(JSON.stringify({type: 'ALREADY_IN_GAME'}))}
@@ -50,7 +50,7 @@ var server = http.createServer(function(request, response) {
      } 
   }
 
-  add_player(data,conn)
+  function add_player(data,conn)
   {
     if(check_in_game(data))
     {
@@ -64,7 +64,7 @@ var server = http.createServer(function(request, response) {
       broadcast({type: "PLAYER_JOINED", joined: game.players[game.players.length-1].full_name, players: game.players }, game.players)
     }
   }
-  broadcast(data, players)
+  function broadcast(data, players)
   {
     clients.forEach(client=>
       {
@@ -78,7 +78,7 @@ var server = http.createServer(function(request, response) {
       })
      
   }
-  delete_player(data,conn)
+  function delete_player(data,conn)
   {
     let game = await storage.load_game(data.id_creator);
     game.remove_player(data);
@@ -98,7 +98,7 @@ var server = http.createServer(function(request, response) {
 
   }
 
-  start_game(data, conn)
+  function start_game(data, conn)
   { 
     let game = await storage.load_game(data.id_creator);
     try{
@@ -112,21 +112,21 @@ var server = http.createServer(function(request, response) {
 
   }
 
-  call_bluff(data)
+  function call_bluff(data)
   {
     let game = await storage.load_game(data.id_creator);
     game.check_honest(true);
     storage.save_game(game);
     broadcast({type: "CALLED_BLUFF",id:game.id, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }, game.players);
   }
-  pass()
+  function pass()
   {
     let game = await storage.load_game(data.id_creator);
     game.pass();
     storage.save_game(game);
     broadcast({type: "PASSED",id:game.id, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }, game.players);
   }
- put_card(data)
+  function put_card(data)
  {
   let game = await storage.load_game(data.id_creator);
   game.put_card(data.card);
@@ -134,7 +134,7 @@ var server = http.createServer(function(request, response) {
   broadcast(Object.assign({type: "PUT_CARD",id:game.id, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }), game.players);
  }
 
- set_color(data)
+ function set_color(data)
  {
   let game = await storage.load_game(data.id_creator);
   game.set_color(data.color);
@@ -158,8 +158,7 @@ var server = http.createServer(function(request, response) {
           case 'CALL_BLUFF': call_bluff(data); break;
           case 'PASS': pass(data); break;
           case 'SET_COLOR': set_color(data); break;
-        }
-         
+        } 
         }
     });
     connection.on('close', function(connection) {
