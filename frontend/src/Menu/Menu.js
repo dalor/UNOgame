@@ -10,6 +10,8 @@ import autoBind from "react-autobind";
 import NewGame from "./NewGame/NewGame";
 import LoadGame from "./Continue/Continue";
 import Join from "./Join/Join";
+import connection from "../services/websocket/websocket";
+import * as loginActions from "../store/login/actions";
 
 
 class Menu extends Component {
@@ -17,6 +19,29 @@ class Menu extends Component {
     constructor(props) {
         super(props);
         autoBind(this);
+
+    }
+
+    componentDidMount() {
+        let pg = this;
+
+
+        connection.onopen = () => {
+            setTimeout(function(){ getGames()},1000);
+            function getGames() {
+                connection.send(JSON.stringify({type: "GET_USER_GAMES", user: pg.props.userInfo}));
+            }
+        };
+
+
+        connection.onmessage = function (message) {
+            let json = JSON.parse(message.data);
+
+            if(json.type === 'SET_GAMES')
+            {
+                pg.props.dispatch(loginActions.setUser(json));
+            }
+        };
     }
 
     onNewGameClick(){
@@ -36,7 +61,7 @@ class Menu extends Component {
         const Header = () => (
             <div id = {'header'}>
                 <div id = {'welcome'}>
-                    Greetings treveler  {this.props.userInfo}
+                    Greetings treveler  {this.props.userInfo.username}
                 </div>
             </div>
         );

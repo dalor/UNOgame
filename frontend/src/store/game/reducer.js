@@ -10,7 +10,9 @@ export default function reduce(state = initialState, action = {}) {
     switch (action.type) {
         case types.CREATE_NEW_GAME: {
             let game = {
-                name: action.gameName
+                name: action.gameName,
+                users: [action.creator],
+                lastCard: undefined
             };
 
             return state.merge({

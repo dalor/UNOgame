@@ -1,10 +1,10 @@
 {
   "name": "backend",
   "version": "0.0.0",
-  "main": "www.js",
+  "main": "websocker-server.js",
   "private": true,
   "scripts": {
-    "start": "node www",
+    "start": "node websocker-server.js",
     "heroku-postbuild": "cd frontend && npm install --only=dev && npm install && npm run build"
   },
   "dependencies": {
@@ -13,6 +13,7 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "websocket": "^1.0.31"
   }
 }

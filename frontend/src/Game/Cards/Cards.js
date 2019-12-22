@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Cards.css';
 import { connect } from 'react-redux';
 import autoBind from "react-autobind";
+import * as gameSelectors from "../../store/game/reducer";
 
 class Cards extends Component {
 
@@ -19,4 +20,10 @@ class Cards extends Component {
     }
 }
 
-export default connect()(Cards);
+function mapStateToProps(state) {
+    return{
+        cards: gameSelectors.getGame(state).cards
+    };
+}
+
+export default connect(mapStateToProps)(Cards);

@@ -4,6 +4,9 @@ import autoBind from "react-autobind";
 import * as menuActions from '../../store/menu/actions';
 import * as gameActions from '../../store/game/actions';
 import { connect } from 'react-redux';
+import connection from '../../services/websocket/websocket';
+import * as loginSelectors from "../../store/login/reducer";
+
 
 class NewGame extends Component{
     constructor(props) {
@@ -13,7 +16,8 @@ class NewGame extends Component{
 
     handleSubmit(e) {
         this.props.dispatch(menuActions.newGameClose());
-        this.props.dispatch(gameActions.createNewGame(this.input.value));
+        this.props.dispatch(gameActions.createNewGame(this.input.value, this.props.userInfo));
+        connection.send(JSON.stringify({type: "CREATE_NEW_GAME", name: this.input.value, creator: this.props.userInfo}));
         e.preventDefault();
     }
 
@@ -36,4 +40,10 @@ class NewGame extends Component{
     }
 }
 
-export default connect()(NewGame);
+function mapStateToProps(state) {
+    return{
+        userInfo: loginSelectors.getUser(state)
+    };
+}
+
+export default connect(mapStateToProps)(NewGame);

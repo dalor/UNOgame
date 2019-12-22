@@ -3,8 +3,8 @@ import * as types from './actionTypes';
 
 
 const initialState = Immutable({
-    Logged: false,
-    User: undefined
+    Logged: true,
+    User: {id: '123', username: 'hitrch', games: new Map()}//undefined
 });
 
 export default function reduce(state = initialState, action = {}) {
@@ -18,17 +18,26 @@ export default function reduce(state = initialState, action = {}) {
                 last_name : action.user.last_name,
                 username : action.user.username,
                 photo_url :  action.user.photo_url,
-                games : []
+                games : undefined
             };
 
-            console.log(user);
             return state.merge({
                 Logged: true,
                 User: user
             });
         }
-        default:
+        case types.SET_GAMES: {
+            //console.log(action.games.size)
+            return state.merge({
+                User: state.User.merge({
+                    games: action.games
+                })
+            });
+        }
+        default:{
             return state;
+        }
+
     }
 }
 
