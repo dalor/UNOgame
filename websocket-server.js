@@ -15,7 +15,7 @@ var server = http.createServer(function(request, response) {
     httpServer: server
   });
   let clients = [];
-
+  let admin_client = [];
   function save_connection(data, conn)
   {
      for(let i in clients)
@@ -142,7 +142,7 @@ var server = http.createServer(function(request, response) {
   broadcast({type: "SET_COLOR",id:game.id, color: game.last_card.color, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }, game.players);
  }
   wsServer.on('request', function(request) {
-   let connection = request.accept(null, request.origin);
+   let connection = request.accept(null, null);
    clients.push({'unknown': connection});
    connection.on('message', function(message) {
       if (message.type == 'utf8') { 
