@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './NewGame.css';
 import autoBind from "react-autobind";
 import * as menuActions from '../../store/menu/actions';
-import * as gameActions from '../../store/game/actions';
 import { connect } from 'react-redux';
 import connection from '../../services/websocket/websocket';
 import * as loginSelectors from "../../store/login/reducer";
@@ -15,15 +14,14 @@ class NewGame extends Component{
     }
 
     handleSubmit(e) {
-        if(this.props.userInfo.games.length > 5)
+        if(this.props.userInfo.games.length > 1)
         {
-            alert('Слишком много игр');
+            alert('No more than 1 game');
         }
         else
         {
-            connection.send(JSON.stringify({type: "USERN"}));
             connection.send(JSON.stringify({type: "CREATE_NEW_GAME", name: this.input.value, creator: this.props.userInfo}));
-            alert('Ваша игра теперь доступна во вкладе Continue');
+            alert('Find your game at Continue');
         }
 
         this.props.dispatch(menuActions.newGameClose());

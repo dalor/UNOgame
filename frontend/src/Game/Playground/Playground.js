@@ -19,7 +19,7 @@ class Playground extends Component {
         }
         else
         {
-            alert('Нужно более 1 игрока');
+            alert('More than 1 player needed');
         }
     }
 

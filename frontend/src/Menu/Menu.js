@@ -29,15 +29,10 @@ class Menu extends Component {
         };
         connection.onmessage = function (message) {
             let json = JSON.parse(message.data);
-            if(json.type === 'SET_GAMES')
-            {
-                pg.props.dispatch(loginActions.setUser(json));
-            }
-            else
-            {
-                if(json.type === 'USERN')
-                {
+            switch(json.type) {
+                case 'SET_GAMES': {
                     pg.props.dispatch(loginActions.setUser(json));
+                    break;
                 }
             }
         };
@@ -93,7 +88,7 @@ class Menu extends Component {
                         this.props.continueChosen ?
                             <LoadGame/>:
                             this.props.joinChosen ?
-                                <Join user={{joins: ['test', 'test2', 'test3']}}/>:
+                                <Join/>:
                                 <Body/>
                 }
             </div>

@@ -6,6 +6,7 @@ import * as loginSelectors from './store/login/reducer';
 import { connect } from 'react-redux';
 
 class App extends Component {
+
     render() {
         const App = () => (
             <div id = {'app'}>

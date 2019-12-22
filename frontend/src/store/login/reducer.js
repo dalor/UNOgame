@@ -4,7 +4,7 @@ import * as types from './actionTypes';
 
 const initialState = Immutable({
     Logged: true,
-    User: {id: '123', username: 'hitrch', games: []}//undefined
+    User: {id: '123', username: 'hitrch', cards: []}//undefined
 });
 
 export default function reduce(state = initialState, action = {}) {

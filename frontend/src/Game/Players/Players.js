@@ -14,15 +14,6 @@ class Players extends Component {
     }
 
     render() {
-        function getGame(games, target) {
-            for(let i = 0; i < games.length; i++)
-            {
-                if(games[i].name === target.name)
-                {
-                    return i;
-                }
-            }
-        }
         return(
             <div id = {'players'}>
                 <div id = {'player1'}>
@@ -30,18 +21,18 @@ class Players extends Component {
                         {this.props.game.users[0].username}
                     </div>
                     <div id={'cardNumber'}>
-                        {console.log(this.props.game.users[0])}
+                        {this.props.game.users[0].cards.length}
                     </div>
                 </div>
                 <div id = {'player'}>
                     {this.props.game.users[1] === undefined ?
-                        <button id={'addPlayer'}>+</button>:
+                        <div>No player yet</div>:
                         <div id={'player2'}>
                             <div id={'playerName'}>
                                 {this.props.game.users[1].username}
                             </div>
                             <div id={'cardNumber'}>
-                                {this.props.game.users[1].cards.size}
+                                {this.props.game.users[1].cards.length}
                             </div>
                         </div>
                     }
@@ -50,7 +41,7 @@ class Players extends Component {
                 <div id = {'player'}>
                     <div id={'playerName'}>
                         {this.props.game.users[2] === undefined ?
-                            <button id={'addPlayer'}>+</button>:
+                            <div>No player yet</div>:
                             <div id={'player2'}>
                                 <div id={'playerName'}>
                                     {this.props.game.users[2].username}
@@ -65,7 +56,7 @@ class Players extends Component {
                 <div id = {'player'}>
                     <div id={'playerName'}>
                         {this.props.game.users[3] === undefined ?
-                            <button id={'addPlayer'}>+</button>:
+                            <div>No player yet</div>:
                             <div id={'player2'}>
                                 <div id={'playerName'}>
                                     {this.props.game.users[3].username}

@@ -58,7 +58,9 @@ function actions(message, connection) {
             break;
         }
         case "USERN": {
-            connection.sendUTF(JSON.stringify({ type: 'USERN', username: 'check' }));
+            clients.forEach(connection => {
+                connection.sendUTF(JSON.stringify({ type: 'USERN', username: 'check' }));
+            });
             break;
         }
         default: {

@@ -16,7 +16,6 @@
     width: 300px;
     margin-top: 20px;
     outline: black 1px solid;
-    overflow-y: scroll;
 }
 
 #load_close{

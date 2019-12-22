@@ -3,7 +3,7 @@ import './Continue.css'
 import { connect } from 'react-redux';
 import autoBind from "react-autobind";
 import * as menuActions from '../../store/menu/actions';
-import * as loginSelectors from "../../store/login/reducer";
+import * as gameSelectors from "../../store/game/reducer";
 import * as gameActions from '../../store/game/actions';
 
 
@@ -27,7 +27,7 @@ class LoadGame extends Component{
             <div id = {'continue'}>
                 <p>Please choose your game</p>
                 <div id = {'avivable_games'}>
-                    {this.props.user.games.map((game, index) => <div id = {index}><button id = {'game_list'} onClick={() => this.onButtonClick(game)}>{game.name}</button></div>)}
+                    {<button id = {'game_list'} onClick={() => this.onButtonClick(this.props.game)}>{this.props.game.name}</button>}
                 </div>
                 <button id = {'load_close'} onClick={this.closeLoadGame}>Close</button>
             </div>
@@ -37,7 +37,7 @@ class LoadGame extends Component{
 
 function mapStateToProps(state) {
     return{
-        user: loginSelectors.getUser(state)
+        game: gameSelectors.getGame(state)
     };
 }
 
