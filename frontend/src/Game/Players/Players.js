@@ -3,6 +3,9 @@ import './Players.css';
 import * as gameSelectors from "../../store/game/reducer";
 import { connect } from 'react-redux';
 import autoBind from "react-autobind/src/autoBind";
+import * as loginSelectors from "../../store/login/reducer";
+
+
 
 class Players extends Component {
     constructor(props) {
@@ -11,6 +14,15 @@ class Players extends Component {
     }
 
     render() {
+        function getGame(games, target) {
+            for(let i = 0; i < games.length; i++)
+            {
+                if(games[i].name === target.name)
+                {
+                    return i;
+                }
+            }
+        }
         return(
             <div id = {'players'}>
                 <div id = {'player1'}>
@@ -18,7 +30,7 @@ class Players extends Component {
                         {this.props.game.users[0].username}
                     </div>
                     <div id={'cardNumber'}>
-                        {}
+                        {console.log(this.props.game.users[0])}
                     </div>
                 </div>
                 <div id = {'player'}>
@@ -72,7 +84,8 @@ class Players extends Component {
 
 function mapStateToProps(state) {
     return{
-        game: gameSelectors.getGame(state)
+        game: gameSelectors.getGame(state),
+        user: loginSelectors.getUser(state)
     };
 }
 

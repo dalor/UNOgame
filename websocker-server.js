@@ -21,68 +21,68 @@ wsServer.on('request', function(request) {
         connection.on('message', function(message) {
             if (message.type == 'utf8') {
                 var json = JSON.parse(message.utf8Data);
-                actions(json);
+                actions(json, connection);
             }
         });  // user disconnected
         connection.on('close', function(connection) {
                 clients.splice(index, 1);
             }
         );
-
-
-        //Макет
-        let games = new Map();
-        let users = [{id: '123', username: 'hitrch', games: new Map()}];
-
-        function addGame(users, target, game) {
-            users.forEach((user) => {
-                if(user.username === target.username)
-                {
-                    user.games.set(game.name, game);
-                }
-            })
-        }
-
-        function getUser(users, target) {
-            for(let i = 0; i < users.length; i++)
-            {
-                if(users[i].username === target.username)
-                {
-                    return users[i];
-                }
-            }
-        }
-
-        function actions(message) {
-            switch (message.type) {
-                case "CREATE_NEW_GAME": {
-                    let game = {
-                        name: message.name,
-                        creator: message.creator,
-                        users: [message.creator]
-                    };
-                    addGame(users, message.creator, game);
-                    games.set(game.name, game);
-                    //console.log(games.size)
-                    break;
-                }
-                case "GET_USER_GAMES": {
-                    console.log(message.user);
-                    console.log("games.size"+games.size);
-                    console.log(getUser(users, message.user).games.size);
-                    connection.sendUTF(JSON.stringify({ type: 'SET_GAMES', games: getUser(users, message.user).games} ));
-                    break;
-                }
-                default: {
-                    console.log('hz');
-                }
-            }
-        }
-
-
-
-
-
     }
 );
 
+//Макет
+let games = [];
+
+function actions(message, connection) {
+    switch (message.type) {
+        case "CREATE_NEW_GAME": {
+            let game = {
+                name: message.name,
+                creator: message.creator.username,
+                users: [message.creator],
+                lastCard: undefined
+            };
+
+            //addGame(users, message.creator, game);
+            games.push(game);
+            //connection.sendUTF(JSON.stringify({ type: 'SET_GAMES', games: getUser(users, message.creator).games }));
+            //console.log(games.size)
+            break;
+        }
+        case "GET_USER_GAMES": {
+            //console.log(users);
+            //console.log("games.size"+games.size);
+            console.log(games);
+            //connection.sendUTF(JSON.stringify({ type: 'SET_GAMES', games: getUser(users, message.user).games }));
+            break;
+        }
+        case "USERN": {
+            connection.sendUTF(JSON.stringify({ type: 'USERN', username: 'check' }));
+            break;
+        }
+        default: {
+            console.log('hz');
+        }
+    }
+}
+
+
+function addGame(users, target, game) {
+    users.forEach((user) => {
+        if(user.username === target.username)
+        {
+            user.games.push(game);
+        }
+    })
+}
+
+function getUser(users, target) {
+    for(let i = 0; i < users.length; i++)
+    {
+        if(users[i].username === target.username)
+        {
+            return users[i];
+        }
+    }
+}

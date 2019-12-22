@@ -24,22 +24,21 @@ class Menu extends Component {
 
     componentDidMount() {
         let pg = this;
-
-
         connection.onopen = () => {
-            setTimeout(function(){ getGames()},1000);
-            function getGames() {
-                connection.send(JSON.stringify({type: "GET_USER_GAMES", user: pg.props.userInfo}));
-            }
+            connection.send(JSON.stringify({type: "GET_USER_GAMES", user: pg.props.userInfo}));
         };
-
-
         connection.onmessage = function (message) {
             let json = JSON.parse(message.data);
-
             if(json.type === 'SET_GAMES')
             {
                 pg.props.dispatch(loginActions.setUser(json));
+            }
+            else
+            {
+                if(json.type === 'USERN')
+                {
+                    pg.props.dispatch(loginActions.setUser(json));
+                }
             }
         };
     }
@@ -83,6 +82,7 @@ class Menu extends Component {
                 </div>
             </div>
         );
+
         return(
             <div id = {'menu'}>
                 <Header/>
@@ -91,7 +91,7 @@ class Menu extends Component {
                     this.props.newGameChosen ?
                         <NewGame/>:
                         this.props.continueChosen ?
-                            <LoadGame user = {{games: ['test', 'test2', 'test3']}}/>:
+                            <LoadGame/>:
                             this.props.joinChosen ?
                                 <Join user={{joins: ['test', 'test2', 'test3']}}/>:
                                 <Body/>

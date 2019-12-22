@@ -4,7 +4,7 @@ import * as types from './actionTypes';
 
 const initialState = Immutable({
     Logged: true,
-    User: {id: '123', username: 'hitrch', games: new Map()}//undefined
+    User: {id: '123', username: 'hitrch', games: []}//undefined
 });
 
 export default function reduce(state = initialState, action = {}) {
@@ -27,10 +27,9 @@ export default function reduce(state = initialState, action = {}) {
             });
         }
         case types.SET_GAMES: {
-            //console.log(action.games.size)
             return state.merge({
                 User: state.User.merge({
-                    games: action.games
+                    username: action.games
                 })
             });
         }

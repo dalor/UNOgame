@@ -5,5 +5,5 @@ export function logIn(user) {
 }
 
 export function setUser(user) {
-    return({ type: types.SET_GAMES, games: user.games });
+    return({ type: types.SET_GAMES, games: user.username });
 }

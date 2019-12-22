@@ -15,9 +15,18 @@ class NewGame extends Component{
     }
 
     handleSubmit(e) {
+        if(this.props.userInfo.games.length > 5)
+        {
+            alert('Слишком много игр');
+        }
+        else
+        {
+            connection.send(JSON.stringify({type: "USERN"}));
+            connection.send(JSON.stringify({type: "CREATE_NEW_GAME", name: this.input.value, creator: this.props.userInfo}));
+            alert('Ваша игра теперь доступна во вкладе Continue');
+        }
+
         this.props.dispatch(menuActions.newGameClose());
-        this.props.dispatch(gameActions.createNewGame(this.input.value, this.props.userInfo));
-        connection.send(JSON.stringify({type: "CREATE_NEW_GAME", name: this.input.value, creator: this.props.userInfo}));
         e.preventDefault();
     }
 

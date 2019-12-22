@@ -1,5 +1,5 @@
 import * as types from './actionTypes';
 
-export function createNewGame(gameChosen, host) {
-    return({ type: types.CREATE_NEW_GAME, gameName: gameChosen, creator: host });
+export function continueGame(gameChosen) {
+    return({ type: types.CONTINUE_GAME, gameName: gameChosen});
 }

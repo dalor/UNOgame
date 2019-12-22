@@ -8,12 +8,14 @@ const initialState = Immutable({
 export default function reduce(state = initialState, action = {}) {
 
     switch (action.type) {
-        case types.CREATE_NEW_GAME: {
+        case types.CONTINUE_GAME: {
             let game = {
-                name: action.gameName,
-                users: [action.creator],
+                name: action.game.name,
+                creator: action.game.creator,
+                users: action.game.users,
                 lastCard: undefined
             };
+
 
             return state.merge({
                 CurrentGame: game
