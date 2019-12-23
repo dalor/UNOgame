@@ -14,16 +14,22 @@ class NewGame extends Component{
     }
 
     handleSubmit(e) {
-        if(this.props.userInfo.games.length > 1)
-        {
-            alert('No more than 1 game');
-        }
-        else
-        {
-            connection.send(JSON.stringify({type: "CREATE_NEW_GAME", name: this.input.value, creator: this.props.userInfo}));
-            alert('Find your game at Continue');
-        }
+        /*try{
+            if(this.props.userInfo.games.length > 1)
+            {
+                alert('No more than 1 game');
+            }
+            else
+            {
+                connection.send(JSON.stringify({type: "CREATE_GAME", data: this.props.userInfo}));
+                alert('Find your game at Continue');
+            }
 
+            this.props.dispatch(menuActions.newGameClose());
+        }catch (e) {
+            console.log(e);
+        }*/
+        connection.send(JSON.stringify(Object.assign({type: "CREATE_GAME"}, this.props.userInfo)));
         this.props.dispatch(menuActions.newGameClose());
         e.preventDefault();
     }

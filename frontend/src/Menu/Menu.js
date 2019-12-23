@@ -25,7 +25,8 @@ class Menu extends Component {
     componentDidMount() {
         let pg = this;
         connection.onopen = () => {
-            connection.send(JSON.stringify({type: "GET_USER_GAMES", user: pg.props.userInfo}));
+
+            connection.send(JSON.stringify(Object.assign({type: "SAVE_CONNECTION"}, pg.props.userInfo)));
         };
         connection.onmessage = function (message) {
             let json = JSON.parse(message.data);
