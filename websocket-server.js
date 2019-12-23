@@ -8,8 +8,8 @@ var http = require('http');
 var server = http.createServer(function(request, response) {
   });
   server.listen(webSocketsServerPort, function() {
-    console.log((new Date()) + " Server is listening on port "
-        + webSocketsServerPort);
+    //console.log((new Date()) + " Server is listening on port "
+     //   + webSocketsServerPort);
   });
   var wsServer = new webSocketServer({
     httpServer: server
@@ -28,15 +28,16 @@ var server = http.createServer(function(request, response) {
            let client = {};
            client[data.id] = conn;
            clients.push(client);
-           console.log(clients);
+           //console.log(clients);
          }
        }
      }
   }
+
   async function check_in_game(data)
   {
-    console.log(data.id);
-    let games = await storage.load_by_id(data.username);
+    //console.log('sdsdv',data.id);
+    let games = await storage.load_by_id(data.id);
     return games.length != 0;
   }
 
@@ -48,9 +49,9 @@ var server = http.createServer(function(request, response) {
     }
     else
     {
-      console.log('data',data);
       let game = new logic.Game({id: data.username, players: [data]});
-      console.log(game);
+     // console.log(game);
+
       storage.save_game(game);
       conn.sendUTF(JSON.stringify({type: 'GAME_CREATED', id: game.id, players: game.players}))
      } 
@@ -58,16 +59,22 @@ var server = http.createServer(function(request, response) {
 
   async function add_player(data,conn)
   {
-    if(check_in_game(data))
+    let in_game = await check_in_game(data);
+    if(in_game)
     {
       conn.sendUTF(JSON.stringify({type: 'ALREADY_IN_GAME'}))
     }
     else
     {
-      let game = await storage.load_game(data.id_creator);
+      console.log('Here');
+      console.log(data.id_creator)
+      let content = await storage.load_game(data.id_creator);
+      let game = new logic.Game(content);
+
       game.add_player(data);
+      //console.log(game);
       storage.save_game(game);
-      broadcast({type: "PLAYER_JOINED", joined: game.players[game.players.length-1].full_name, players: game.players }, game.players)
+      broadcast({type: "PLAYER_JOINED", id: game.id, players: game.players }, game.players)
     }
   }
   function broadcast(data, players)
@@ -125,6 +132,7 @@ var server = http.createServer(function(request, response) {
     storage.save_game(game);
     broadcast({type: "CALLED_BLUFF",id:game.id, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }, game.players);
   }
+
   async function pass()
   {
     let game = await storage.load_game(data.id_creator);
@@ -132,6 +140,7 @@ var server = http.createServer(function(request, response) {
     storage.save_game(game);
     broadcast({type: "PASSED",id:game.id, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }, game.players);
   }
+
   async function put_card(data)
  {
   let game = await storage.load_game(data.id_creator);
@@ -140,6 +149,12 @@ var server = http.createServer(function(request, response) {
   broadcast(Object.assign({type: "PUT_CARD",id:game.id, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }), game.players);
  }
 
+async function find_games(data, conn)
+{
+  let games = await storage.find_games(data.username);
+  conn.sendUTF(JSON.stringify({type: 'SET_GAMES', data: games}))
+}
+
  async function set_color(data)
  {
   let game = await storage.load_game(data.id_creator);
@@ -147,13 +162,14 @@ var server = http.createServer(function(request, response) {
   storage.save_game(game);
   broadcast({type: "SET_COLOR",id:game.id, color: game.last_card.color, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }, game.players);
  }
+
   wsServer.on('request', function(request) {
    let connection = request.accept(null, null);
    clients.push({'unknown': connection});
    connection.on('message', function(message) {
       if (message.type == 'utf8') { 
         let data = JSON.parse(message.utf8Data);
-        console.log(data);
+        //console.log(data);
         switch(data.type)
         {
           case 'SAVE_CONNECTION': if(data.admin) admin_client.push(connection); else save_connection(data, connection); break;
@@ -165,11 +181,21 @@ var server = http.createServer(function(request, response) {
           case 'CALL_BLUFF': call_bluff(data); break;
           case 'PASS': pass(data); break;
           case 'SET_COLOR': set_color(data); break;
+          case 'FIND_GAMES': find_games(data, connection); break;
         } 
         }
     });
     connection.on('close', function(connection) {
-        
+      for(let i in clients)
+      {
+        for(let key in clients[i])
+        {
+          if(clients[i][key] == connection)
+          {
+            clients.splice(i,1);
+          }
+        }
+      }
       }
     );
   }

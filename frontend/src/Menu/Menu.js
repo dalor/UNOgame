@@ -31,30 +31,31 @@ class Menu extends Component {
         };
         connection.onmessage = function (message) {
             let json = JSON.parse(message.data);
-            console.log(json);
             switch(json.type) {
-                case 'SET_GAMES': {
-                    pg.props.dispatch(loginActions.setUser(json));
-                    break;
-                }
                 case 'PLAYER_JOINED': {
-                    // pg.props.dispatch(gameActions.joinGame(json));
+                    pg.props.dispatch(gameActions.joinGame(json));
                     break;
                 }
                 case 'GAME_CREATED':
                     {
-                        console.log('here')
                         pg.props.dispatch(gameActions.joinGame(json))
                         break;
+                    }
+                case 'SET_GAMES': 
+                {
+                    console.log('JSONdata',json.data);
+                    pg.props.dispatch(loginActions.setGames(json.data));
+                    break;
+                }
+                case 'ALREADY_IN_GAME':
+                    {
+                        alert('ALREADY_IN_GAME');
                     }
             }
         };
     }
 
     onNewGameClick(){
-
-       
-    
         connection.send(JSON.stringify(Object.assign({type: 'CREATE_GAME'}, this.props.userInfo)));
         this.props.dispatch(menuActions.newGameChosen());
     }

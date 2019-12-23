@@ -4,6 +4,6 @@ export function logIn(user) {
     return({ type: types.LOGGED_IN, user: user });
 }
 
-export function setUser(user) {
-    return({ type: types.SET_GAMES, games: user.username });
+export function setGames(games) {
+    return({ type: types.SET_GAMES, games: games });
 }

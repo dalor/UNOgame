@@ -1,26 +1,27 @@
 const client = require('./redis')
 
 const save_game = (game) => {
-    console.log(game);
+    console.log('Saved');
+    console.log('Game', game)
     client.HMSET(game.id, game.repr(), function(err, res)
     {
-        client.quit();
     })
 
 }
 exports.save_game = save_game
 const load_games_by_player_id = (player_id)=>
 {
+    //console.log(player_id);
 return new Promise((resolve, reject) => { 
     let games = [];  
-    client.keys("*", async function (err, keys) { 
+    client.keys("*", function (err, keys) { 
         console.log(keys);
         if(keys == undefined) resolve(games);
         else{
             Promise.all(keys.map(async key => {
                 let game =  await load_game(key);
                 if(game.players.findIndex((player)=>player.id == player_id) !=-1) games.push(game)
-         })).then(v=>resolve(games))
+         })).then(v=>{resolve(games)})
         }
      
     });
@@ -29,8 +30,10 @@ return new Promise((resolve, reject) => {
 exports.load_by_id = load_games_by_player_id
 
 const load_game = (game_id) => new Promise((resolve, reject) => { 
-    client.hgetall(`${game_id}`, function (err, obj) {
-        if(obj ==null) reject('No game with such an id')
+    console.log('Searching',game_id);
+    client.HGETALL(game_id, function (err, obj) {
+        console.log(err,'', obj);
+        if(obj == null) reject('No game with such an id')
         else {resolve(parse(obj))}
     });
 })
@@ -58,8 +61,35 @@ const delete_game = (game_id)=>
     {
         client.HDEL(game_id, keys, function(err, res)
         {
-            client.quit();
+            
         })
     })
 }
 exports.delete_game = delete_game;
+
+const find_games = (game_id)=>
+{
+    let id = game_id;
+    let games = []; 
+    return new Promise((resolve, reject) => { 
+        client.keys("*", function (err, keys) { 
+            console.log(keys);
+            if(keys == undefined) resolve(games);
+            else{ 
+                console.log('keys',keys);
+                keys = keys.filter(key=> key.startsWith(id));
+                Promise.all(keys.map(async key => {
+                    try{
+                        console.log(key);
+                        let game =  await load_game(key);
+                        games.push(game)
+                    }
+                    catch (e)
+                    {  reject(e) }
+                })).then(v=>{resolve(games)})
+            }
+         
+        });
+    });
+}
+exports.find_games = find_games;

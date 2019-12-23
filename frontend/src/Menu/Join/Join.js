@@ -4,7 +4,7 @@ import * as menuActions from "../../store/menu/actions";
 import { connect } from 'react-redux';
 import './Join.css';
 import connection from "../../services/websocket/websocket";
-import loginSelectors from "../../store/login/reducer"
+import * as loginSelectors from "../../store/login/reducer"
 
 class Join extends Component{
     constructor(props) {
@@ -12,13 +12,14 @@ class Join extends Component{
         autoBind(this);
     }
 
-    handleChange() {
+    handleChange(e) {
         console.log(this.props);
-        connection.send(JSON.stringify({type: "ADD_PLAYER", id_creator: this.props.userInfo.username}));
+        connection.send(JSON.stringify({type: "FIND_GAMES", username: e.target.value}));
     }
     joinGame(game_id)
     {
-
+        console.log(game_id);
+        connection.send(JSON.stringify(Object.assign({type: "ADD_PLAYER"}, this.props.userInfo, {id_creator: game_id})));
     }
     closeLoadGame() {
         this.props.dispatch(menuActions.joinClose());
@@ -29,8 +30,8 @@ class Join extends Component{
             <div id = {'join'}>
             <h3>Find a game via a username</h3>
             <input type = 'text' style={{'width': '250px'}} onChange = {this.handleChange} required={true}/><br/>
-            {this.props.userInfo.available_games.length ==0 ? '' : this.props.userInfo.available_games.map(game=>
-            <div className ='offered-game' onClick = {this.joinGame.bind(null,game.id_creator)}>{game.id_creator}</div>
+            {(this.props.userInfo.available_games==undefined || this.props.userInfo.available_games.length ==0 ) ? '' : this.props.userInfo.available_games.map(game=>
+            <button className ='offered-game' onClick = {this.joinGame.bind(null,game.id)}>{game.id}</button>
             )
     }
             <button id = {'load_close'} onClick={this.closeLoadGame}>Close</button>
