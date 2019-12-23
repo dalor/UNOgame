@@ -12,7 +12,7 @@ class Join extends Component{
     }
 
     handleSubmit() {
-        connection.send(JSON.stringify({type: "ADD_PLAYER", creator: this.input.value, newPlayer: this.props.userInfo}));
+        connection.send(JSON.stringify({type: "ADD_PLAYER", id_creator: this.props.userInfo.username}));
     }
 
     closeLoadGame() {
@@ -27,7 +27,7 @@ class Join extends Component{
                     <form onSubmit={this.handleSubmit}>
                         <h3>Find a game via a username</h3>
                         <input type = 'text' style={{'width': '250px'}} ref={(input) => this.input = input} required={true}/><br/>
-                        <input type= 'submit' value = 'Create'/>
+                        <input type= 'submit' value = 'Find'/>
                     </form>
                 </div>
                 <button id = {'load_close'} onClick={this.closeLoadGame}>Close</button>

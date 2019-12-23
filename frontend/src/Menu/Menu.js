@@ -12,6 +12,7 @@ import LoadGame from "./Continue/Continue";
 import Join from "./Join/Join";
 import connection from "../services/websocket/websocket";
 import * as loginActions from "../store/login/actions";
+import * as gameActions from "../store/game/actions";
 
 
 class Menu extends Component {
@@ -33,6 +34,10 @@ class Menu extends Component {
             switch(json.type) {
                 case 'SET_GAMES': {
                     pg.props.dispatch(loginActions.setUser(json));
+                    break;
+                }
+                case 'PLAYER_JOINED': {
+                    pg.props.dispatch(gameActions.continueGame(json));
                     break;
                 }
             }

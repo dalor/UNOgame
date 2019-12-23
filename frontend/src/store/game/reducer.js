@@ -9,16 +9,16 @@ export default function reduce(state = initialState, action = {}) {
 
     switch (action.type) {
         case types.CONTINUE_GAME: {
-            let game = {
+            /*let game = {
                 name: action.game.name,
                 creator: action.game.creator,
                 users: action.game.users,
                 lastCard: undefined
-            };
+            };*/
 
 
             return state.merge({
-                CurrentGame: game
+                CurrentGame: action.gameChosen
             });
         }
         default:
