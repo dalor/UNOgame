@@ -28,33 +28,39 @@ var server = http.createServer(function(request, response) {
            let client = {};
            client[data.id] = conn;
            clients.push(client);
+           console.log(clients);
          }
        }
      }
   }
-  function check_in_game(data)
+  async function check_in_game(data)
   {
-    let games = await storage.load_by_id(data.id);
+    console.log(data.id);
+    let games = await storage.load_by_id(data.username);
     return games.length != 0;
   }
 
-  function create_game(data, conn)
+  async function create_game(data, conn)
   {
-    
-    if(check_in_game(data)) {conn.sendUTF8(JSON.stringify({type: 'ALREADY_IN_GAME'}))}
+    let in_game = await check_in_game(data);
+    if(in_game) {
+      conn.sendUTF(JSON.stringify({type: 'ALREADY_IN_GAME', player: data}))
+    }
     else
     {
+      console.log('data',data);
       let game = new logic.Game({id: data.username, players: [data]});
+      console.log(game);
       storage.save_game(game);
-      conn.sendUTF8(JSON.stringify({type: 'GAME_CREATED', id: game.id, players: game.players}))
+      conn.sendUTF(JSON.stringify({type: 'GAME_CREATED', id: game.id, players: game.players}))
      } 
   }
 
-  function add_player(data,conn)
+  async function add_player(data,conn)
   {
     if(check_in_game(data))
     {
-      conn.sendUTF8(JSON.stringify({type: 'ALREADY_IN_GAME'}))
+      conn.sendUTF(JSON.stringify({type: 'ALREADY_IN_GAME'}))
     }
     else
     {
@@ -72,13 +78,13 @@ var server = http.createServer(function(request, response) {
         {
           if(players.findIndex(player=> player.id == key)!=-1) 
           {
-          client[key].sendUTF8(JSON.stringify(data));
+          client[key].sendUTF(JSON.stringify(data));
           }
         }
       })
      
   }
-  function delete_player(data,conn)
+  async function delete_player(data,conn)
   {
     let game = await storage.load_game(data.id_creator);
     game.remove_player(data);
@@ -98,7 +104,7 @@ var server = http.createServer(function(request, response) {
 
   }
 
-  function start_game(data, conn)
+  async function start_game(data, conn)
   { 
     let game = await storage.load_game(data.id_creator);
     try{
@@ -107,26 +113,26 @@ var server = http.createServer(function(request, response) {
       broadcast({type: "GAME_STARTED",id:game.id, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }, game.players);
     }
     catch{
-      conn.sendUTF8(JSON.stringify({type: 'NOT_ENOUGH_PLAYERS'}));
+      conn.sendUTF(JSON.stringify({type: 'NOT_ENOUGH_PLAYERS'}));
     }
 
   }
 
-  function call_bluff(data)
+  async function call_bluff(data)
   {
     let game = await storage.load_game(data.id_creator);
     game.check_honest(true);
     storage.save_game(game);
     broadcast({type: "CALLED_BLUFF",id:game.id, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }, game.players);
   }
-  function pass()
+  async function pass()
   {
     let game = await storage.load_game(data.id_creator);
     game.pass();
     storage.save_game(game);
     broadcast({type: "PASSED",id:game.id, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }, game.players);
   }
-  function put_card(data)
+  async function put_card(data)
  {
   let game = await storage.load_game(data.id_creator);
   game.put_card(data.card);
@@ -134,7 +140,7 @@ var server = http.createServer(function(request, response) {
   broadcast(Object.assign({type: "PUT_CARD",id:game.id, possible_cards: game.possible_cards, last_card: game.last_card, now: game.now, players: game.players }), game.players);
  }
 
- function set_color(data)
+ async function set_color(data)
  {
   let game = await storage.load_game(data.id_creator);
   game.set_color(data.color);
@@ -147,10 +153,11 @@ var server = http.createServer(function(request, response) {
    connection.on('message', function(message) {
       if (message.type == 'utf8') { 
         let data = JSON.parse(message.utf8Data);
+        console.log(data);
         switch(data.type)
         {
-          case 'SAVE_CONNECTION': save_connection(data, connection); break;
-          case 'CREATE_GAME': create_game(data, connection); break;
+          case 'SAVE_CONNECTION': if(data.admin) admin_client.push(connection); else save_connection(data, connection); break;
+          case 'CREATE_GAME': console.log('nice');create_game(data, connection); break;
           case 'ADD_PLAYER': add_player(data, connection); break;
           case 'DELETE_PLAYER': delete_player(data, connection); break;
           case 'START_GAME': start_game(data,connection); break;

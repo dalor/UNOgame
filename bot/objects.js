@@ -16,7 +16,7 @@ class Card {
     }
     repr() {
         return {
-            id: this.light
+            id: this.id
         }
     }
 }
@@ -26,6 +26,7 @@ exports.Card = Card
 class Player {
     constructor(dict) {
         this.id = dict.id
+        this.username = dict.username ? dict.username : '';
         this.full_name = dict.full_name ? dict.full_name : dict.first_name + (dict.last_name ? ' ' + dict.last_name: '')
         this.cards = dict.cards ? dict.cards.map(card=>new Card(card)) : [];
     }
@@ -45,7 +46,7 @@ class Player {
         return {
             id: this.id,
             full_name: this.full_name,
-            cards: this.cards ? this.cards.map((card) => card.repr()): null
+            cards: this.cards ? this.cards.map((card) => card.repr()): []
         }
     }
 }
@@ -78,13 +79,13 @@ class Game {
         return {
             id: this.id,
             now: this.now,
-            last_card: JSON.stringify(this.last_card.repr()),
-            used_cards: JSON.stringify(this.used_cards.map(card=> card.repr())),
-            cards: JSON.stringify(this.cards.map(card=> card.repr())),
-            possible_cards: JSON.stringify(this.possible_cards.map(card=> card.repr())),
+            last_card: this.last_card ? JSON.stringify(this.last_card.repr()) : null,
+            used_cards: this.used_cards? JSON.stringify(this.used_cards.map(card=> card.repr())) : JSON.stringify([]),
+            cards: this.cards? JSON.stringify(this.cards.map(card=> card.repr())): JSON.stringify([]),
+            possible_cards: this.possible_cards? JSON.stringify(this.possible_cards.map(card=> card.repr())): JSON.stringify([]),
             players: JSON.stringify(this.players.map(player=> player.repr())), // ? this.players.map((pl) => pl.repr()): null,
             turn: this.turn,
-            ability: JSON.stringify(this.last_card.content),
+            ability: this.ability? JSON.stringify(this.last_card.content): 0,
             winner: this.winner
         }
     }
@@ -96,7 +97,7 @@ class Game {
         this.players.push(player);
         return player.repr();
     }
-    remove_player(dict)
+    remove_player(dict) //need delete player cards
     {
        let i = this.players.findIndex(player=>player.id ==dict.id);
        this.now--;
