@@ -26,25 +26,37 @@ class Menu extends Component {
     componentDidMount() {
         let pg = this;
         connection.onopen = () => {
-
+            console.log(Object.assign({type: "SAVE_CONNECTION"}, pg.props.userInfo));
             connection.send(JSON.stringify(Object.assign({type: "SAVE_CONNECTION"}, pg.props.userInfo)));
         };
         connection.onmessage = function (message) {
             let json = JSON.parse(message.data);
             switch(json.type) {
-                case 'SET_GAMES': {
-                    pg.props.dispatch(loginActions.setUser(json));
-                    break;
-                }
                 case 'PLAYER_JOINED': {
-                    pg.props.dispatch(gameActions.continueGame(json));
+                    pg.props.dispatch(gameActions.joinGame(json));
                     break;
                 }
+                case 'GAME_CREATED':
+                    {
+                        pg.props.dispatch(gameActions.joinGame(json))
+                        break;
+                    }
+                case 'SET_GAMES': 
+                {
+                    console.log('JSONdata',json.data);
+                    pg.props.dispatch(loginActions.setGames(json.data));
+                    break;
+                }
+                case 'ALREADY_IN_GAME':
+                    {
+                        alert('ALREADY_IN_GAME');
+                    }
             }
         };
     }
 
     onNewGameClick(){
+        connection.send(JSON.stringify(Object.assign({type: 'CREATE_GAME'}, this.props.userInfo)));
         this.props.dispatch(menuActions.newGameChosen());
     }
 
@@ -87,7 +99,7 @@ class Menu extends Component {
         return(
             <div id = {'menu'}>
                 <Header/>
-                {this.props.gameChosen !== undefined ?
+                {this.props.gameChosen ?
                     <Game/> :
                     this.props.newGameChosen ?
                         <NewGame/>:

@@ -1,10 +1,13 @@
 import Immutable from 'seamless-immutable';
 import * as types from './actionTypes';
 
-
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  const letters = ['a','b','c','d','f','g','r','y','u','1','2','3','4','5','6'];
 const initialState = Immutable({
     Logged: true,
-    User: {id: '123', first_name: 'dolboeb', last_name: 'petia', username: 'hitrch', cards: []}//undefined
+    User: {id: '123' + letters[getRandomInt(0,letters.length-1)], first_name: 'dolboeb', last_name: 'petia', username: 'hitrch' +letters[getRandomInt(0,letters.length-1)], available_games: []}//undefined
 });
 
 export default function reduce(state = initialState, action = {}) {
@@ -18,7 +21,7 @@ export default function reduce(state = initialState, action = {}) {
                 last_name : action.user.last_name,
                 username : action.user.username,
                 photo_url :  action.user.photo_url,
-                games : undefined
+                available_games: []
             };
 
             return state.merge({
@@ -27,10 +30,16 @@ export default function reduce(state = initialState, action = {}) {
             });
         }
         case types.SET_GAMES: {
+            let user = {
+                id: state.User.id,
+                first_name: state.User.first_name,
+                last_name: state.User.last_name,
+                username: state.User.username,
+                available_games: action.games
+            };
+            console.log('GAmes', action);
             return state.merge({
-                User: state.User.merge({
-                    username: action.games
-                })
+                User: user
             });
         }
         default:{
@@ -47,5 +56,6 @@ export  function isLogged(state) {
 }
 
 export function getUser(state) {
-    return state.login.User;
+    console.log('OUR STATE', state.login.User);
+    return state.login.User ? state.login.User: null;
 }

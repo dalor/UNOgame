@@ -13,70 +13,31 @@ class Players extends Component {
         autoBind(this);
     }
 
-    render() {
+    render() {   
         return(
+            <div> 
+            { !this.props.game ? 'Nine': 
             <div id = {'players'}>
-                <div id = {'player1'}>
-                    <div id={'playerName'}>
-                        {this.props.game.users[0].username}
-                    </div>
-                    <div id={'cardNumber'}>
-                        {this.props.game.users[0].cards.length}
-                    </div>
-                </div>
-                <div id = {'player'}>
-                    {this.props.game.users[1] === undefined ?
-                        <div>No player yet</div>:
-                        <div id={'player2'}>
-                            <div id={'playerName'}>
-                                {this.props.game.users[1].username}
-                            </div>
-                            <div id={'cardNumber'}>
-                                {this.props.game.users[1].cards.length}
-                            </div>
+               {this.props.game.players.map(player=>
+                 <div id = {'player'}>
+                         <div id={'playerName'}>
+                            {player.username}
+                         </div>
+                         <div id={'cardNumber'}>
+                            {player.cards.length}
                         </div>
-                    }
-
-                </div>
-                <div id = {'player'}>
-                    <div id={'playerName'}>
-                        {this.props.game.users[2] === undefined ?
-                            <div>No player yet</div>:
-                            <div id={'player2'}>
-                                <div id={'playerName'}>
-                                    {this.props.game.users[2].username}
-                                </div>
-                                <div id={'cardNumber'}>
-                                    {this.props.game.users[2].cards.length}
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-                <div id = {'player'}>
-                    <div id={'playerName'}>
-                        {this.props.game.users[3] === undefined ?
-                            <div>No player yet</div>:
-                            <div id={'player2'}>
-                                <div id={'playerName'}>
-                                    {this.props.game.users[3].username}
-                                </div>
-                                <div id={'cardNumber'}>
-                                    {this.props.game.users[3].cards.length}
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
+                  </div>
+                 )             
+              }
+             </div>          
+            }
             </div>
-        );
-    }
+              )    
 }
-
+}
 function mapStateToProps(state) {
     return{
         game: gameSelectors.getGame(state),
-        user: loginSelectors.getUser(state)
     };
 }
 
