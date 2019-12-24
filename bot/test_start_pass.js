@@ -11,4 +11,4 @@ game.pass();
 console.log('Last card: ',game.last_card, game.last_card.is_special());
 console.log('Now player: ',game.now_player().repr());
 console.log('Possible cards: ', game.possible_cards.map(card=>card.repr()));
- console.log(game.players.forEach(player=>console.log(player.repr())));
+console.log(game.players.forEach(player=>console.log(player.repr())));
