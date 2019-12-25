@@ -4,6 +4,7 @@ import * as menuActions from "../../store/menu/actions";
 import { connect } from 'react-redux';
 import './Join.css';
 import connection from "../../services/websocket/websocket";
+import * as loginSelectors from "../../store/login/reducer";
 
 class Join extends Component{
     constructor(props) {
@@ -36,4 +37,9 @@ class Join extends Component{
     }
 }
 
-export default connect()(Join);
+function mapStateToProps(state) {
+    return{
+        userInfo:  loginSelectors.getUser(state)
+    };
+}
+export default connect(mapStateToProps)(Join);
