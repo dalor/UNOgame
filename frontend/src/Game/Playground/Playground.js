@@ -4,6 +4,7 @@ import autoBind from "react-autobind/src/autoBind";
 import * as gameSelectors from "../../store/game/reducer";
 import { connect } from 'react-redux';
 import connection from '../../services/websocket/websocket';
+const mappings = require("../Cards/mapping");
 
 class Playground extends Component {
     constructor(props) {
@@ -13,9 +14,10 @@ class Playground extends Component {
     }
 
     onStart(){
-        if(this.props.game.users.length > 1)
+        if(this.props.game.players.length > 1)
         {
-            connection.send(JSON.stringify({type: "START_GAME", game: this.props.game.name}));
+            console.log(this.props.game);
+            connection.send(JSON.stringify({type: "START_GAME", game: this.props.game}));
         }
         else
         {
@@ -27,9 +29,13 @@ class Playground extends Component {
         return(
             <div id = {'playground'}>
                 <div id = {'last_card'}>
-                    {this.props.game.lastCard === undefined ?
-                        <button id = {'start'} onClick={this.onStart}>Start</button> :
-                        <img id={'l_card'} src={this.props.game.lastCard}/>
+                    {
+                        this.props.game ? this.props.game.last_card ?
+                            this.props.game.last_card.id ?
+                                <img id={'l_card'} src = {'cards/' + mappings[this.props.game.last_card.id] +'.png'}/> :
+                                this.props.game.last_card.light ? <img id={'l_card'} src = {'cards/' + mappings[this.props.game.last_card.light] +'.png'}/>:
+                            <button id = {'start'} onClick={this.onStart}>Start</button> :
+                            'None' : 'None'
                     }
                 </div>
             </div>

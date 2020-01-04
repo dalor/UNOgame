@@ -13,28 +13,31 @@ class Players extends Component {
         autoBind(this);
     }
 
-    render() {   
+    render() {
         return(
-            <div> 
-            { !this.props.game ? 'Nine': 
-            <div id = {'players'}>
-               {this.props.game.players.map(player=>
-                 <div id = {'player'}>
-                         <div id={'playerName'}>
-                            {player.username}
-                         </div>
-                         <div id={'cardNumber'}>
-                            {player.cards.length}
-                        </div>
-                  </div>
-                 )             
-              }
-             </div>          
-            }
-            </div>
-              )    
+                !this.props.game ? 'No players'
+                :
+                <div id = {'players'}>
+                    {console.log("Players", this.props.game)}
+                        {
+                            this.props.game.players.map(player =>
+                                <div id = {'player'}>
+                                    <div id={'playerName'}>
+                                        {player.username}
+                                    </div>
+                                    <div id={'cardNumber'}>
+                                        {player.cards.length}
+                                    </div>
+                                </div>
+                            )
+                        }
+                </div>
+            
+          
+        )
+    }
 }
-}
+
 function mapStateToProps(state) {
     return{
         game: gameSelectors.getGame(state),

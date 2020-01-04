@@ -13,27 +13,6 @@ class NewGame extends Component{
         autoBind(this);
     }
 
-    handleSubmit(e) {
-        /*try{
-            if(this.props.userInfo.games.length > 1)
-            {
-                alert('No more than 1 game');
-            }
-            else
-            {
-                connection.send(JSON.stringify({type: "CREATE_GAME", data: this.props.userInfo}));
-                alert('Find your game at Continue');
-            }
-
-            this.props.dispatch(menuActions.newGameClose());
-        }catch (e) {
-            console.log(e);
-        }*/
-        connection.send(JSON.stringify(Object.assign({type: "CREATE_GAME"}, this.props.userInfo)));
-        this.props.dispatch(menuActions.newGameClose());
-        e.preventDefault();
-    }
-
     close() {
         this.props.dispatch(menuActions.newGameClose());
     }
@@ -41,22 +20,11 @@ class NewGame extends Component{
     render() {
         return(
         <div id = {'newgame'}>
-            <form onSubmit={this.handleSubmit}>
-                <h3>NewGame</h3>
-                <h3>Game name</h3>
-                <input type = 'text' style={{'width': '250px'}} ref={(input) => this.input = input} required={true}/><br/>
+                <h3>...Loading</h3>
                 <button onClick={this.close} style={{'marginTop': '20px'}}>Close</button>
-                <input type= 'submit' value = 'Create'/>
-            </form>
         </div>
         );
     }
 }
 
-function mapStateToProps(state) {
-    return{
-        userInfo: loginSelectors.getUser(state)
-    };
-}
-
-export default connect(mapStateToProps)(NewGame);
+export default connect()(NewGame);

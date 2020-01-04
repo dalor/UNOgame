@@ -30,37 +30,77 @@ class Menu extends Component {
             connection.send(JSON.stringify(Object.assign({type: "SAVE_CONNECTION"}, pg.props.userInfo)));
         };
         connection.onmessage = function (message) {
-            let json = JSON.parse(message.data);
+            let json;
+
+            json = JSON.parse(message.data);
+
             switch(json.type) {
+                case 'PREPARE_PASS': {
+                    console.log('PREPARE_PASS',json);
+                    pg.props.dispatch(gameActions.joinGame(json.game));
+                    break;
+                }
+                case 'CHANGE_COLOR': {
+                    console.log('CHANGE_COLOR',json);
+                    pg.props.dispatch(gameActions.joinGame(json.game));
+                    break;
+                }
+                case 'PUT_CARD': {
+                    console.log('PUT_CARD',json);
+                    pg.props.dispatch(gameActions.joinGame(json.game));
+                    break;
+                }
+                case 'STARTED_GAME': {
+                    //console.log('STARTED_GAME',json);
+                    pg.props.dispatch(gameActions.joinGame(json.game));
+                    break;
+                }
                 case 'PLAYER_JOINED': {
-                    pg.props.dispatch(gameActions.joinGame(json));
+                    console.log('GAME',json);
+                    pg.props.dispatch(gameActions.joinGame(json.game));
                     break;
                 }
                 case 'GAME_CREATED':
-                    {
-                        pg.props.dispatch(gameActions.joinGame(json))
-                        break;
-                    }
-                case 'SET_GAMES': 
                 {
-                    console.log('JSONdata',json.data);
+                    console.log('Json',json);
+                    pg.props.dispatch(gameActions.joinGame(json));
+                    break;
+                }
+                case 'SET_AVAILABLE_GAMES':
+                {
+                    console.log('AVAILABLE_GAMES',json.data);
                     pg.props.dispatch(loginActions.setGames(json.data));
                     break;
                 }
                 case 'ALREADY_IN_GAME':
-                    {
-                        alert('ALREADY_IN_GAME');
-                    }
+                {
+                    //alert('ALREADY_IN_GAME');
+                    console.log('ALREADY_IN_GAME', json);
+                    pg.props.dispatch(gameActions.joinGame(json.game));
+                    break;
+                }
+                case 'GAME_STARTED' :
+                {
+                    pg.props.dispatch(gameActions.startGame(json));
+                    break;
+                }
+                case 'SET_JOINED_GAMES':
+                {
+                    console.log('JOINED_GAMES',json.data);
+                    pg.props.dispatch(loginActions.setGames(json.data));
+                    break;
+                }
             }
         };
     }
 
-    onNewGameClick(){
-        connection.send(JSON.stringify(Object.assign({type: 'CREATE_GAME'}, this.props.userInfo)));
-        this.props.dispatch(menuActions.newGameChosen());
-    }
-
     onContinueClick(){
+        connection.send(JSON.stringify(Object.assign( {type: 'FIND_JOINED_GAMES'},
+            { player:
+                    {
+                        id: this.props.userInfo.id,
+                    }
+            })));
         this.props.dispatch(menuActions.continueChosen());
     }
 
@@ -85,12 +125,6 @@ class Menu extends Component {
                     </h4>
                 </div>
                 <div id = {'menubutton'}>
-                    <button style = {{'width': '100px'}} onClick = {this.onNewGameClick}>New Game</button>
-                </div>
-                <div id = {'menubutton'}>
-                    <button style = {{'width': '100px', 'marginTop': '20px'}} onClick = {this.onContinueClick}>Continue</button>
-                </div>
-                <div id = {'menubutton'}>
                     <button style = {{'width': '100px', 'marginTop': '20px'}} onClick = {this.onJoinClick}>Join</button>
                 </div>
             </div>
@@ -98,13 +132,13 @@ class Menu extends Component {
 
         return(
             <div id = {'menu'}>
-                <Header/>
-                {this.props.gameChosen ?
+                <Header/>{
+                    this.props.gameChosen ?
                     <Game/> :
-                    this.props.newGameChosen ?
-                        <NewGame/>:
-                        this.props.continueChosen ?
-                            <LoadGame/>:
+                    //this.props.newGameChosen ?
+                        //<NewGame/>:
+                        //this.props.continueChosen ?
+                            //<LoadGame/>:
                             this.props.joinChosen ?
                                 <Join/>:
                                 <Body/>

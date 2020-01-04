@@ -15,7 +15,7 @@ class LoadGame extends Component{
     }
 
     onButtonClick(game) {
-        this.props.dispatch(gameActions.continueGame(game));
+        this.props.dispatch(gameActions.joinGame(game));
     }
 
     closeLoadGame() {
@@ -25,10 +25,8 @@ class LoadGame extends Component{
     render() {
         return(
             <div id = {'continue'}>
-                <p>Please choose your game</p>
-                <div id = {'avivable_games'}>
-                    {<button id = {'game_list'} onClick={() => this.onButtonClick(this.props.game)}>{this.props.game.name}</button>}
-                </div>
+                {!this.props.game ? "No games" : <button id = {'game_list'} onClick={() => this.onButtonClick(this.props.game)}>
+                    {this.props.game.name}</button>}
                 <button id = {'load_close'} onClick={this.closeLoadGame}>Close</button>
             </div>
         );

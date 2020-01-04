@@ -2,3 +2,21 @@
     height: 30%;
     outline: 1px black solid;
 }
+
+.flex{
+    height: 100%;
+    overflow: scroll;
+}
+
+#card{
+    display: inline-block;
+    width: 150px;
+    height: 100%;
+}
+
+#card_block{
+    display: inline-block;
+    width: 150px;
+    height: 90%;
+    outline: 1px black solid;
+}

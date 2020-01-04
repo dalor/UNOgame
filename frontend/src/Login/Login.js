@@ -23,7 +23,10 @@ class Login extends Component {
     handleTelegramResponse = response => {
         this.props.dispatch(loginActions.logIn(response));
     };
-
+  submit()
+  {
+      
+  }
     render() {
         return(
             <div id = {'login'}>
@@ -31,8 +34,16 @@ class Login extends Component {
                     <div id = {'form'}>
                         <div id = "greetings">Welcome to UNOgame</div>
                         <div id = "telegramButton" />
+                    
                     </div>
+                <form onSubmit={this.submit}>
+                    <input ref={node => {
+            this.input = node
+          }}></input>
+          <button type ='Submit'>Create user</button>
+                </form>
                 </div>
+                
             </div>
         );
     }

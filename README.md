@@ -1,5 +1,5 @@
 # UNOgame
-Воплощение карточной игры Uno в виде  MOG(Multiplayer Online Menu).
+Воплощение карточной игры Uno в виде  MOG(Multiplayer Online Game).
 
 #
 
