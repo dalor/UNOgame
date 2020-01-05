@@ -14,6 +14,13 @@
     height: 100%;
 }
 
+#take_card{
+    float:left;
+    display: inline-block;
+    width: 150px;
+    height: 100%;
+}
+
 #card_block{
     display: inline-block;
     width: 150px;

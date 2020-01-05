@@ -24,6 +24,9 @@ class Players extends Component {
                                 <div id = {'player'}>
                                     <div id={'playerName'}>
                                         {player.username}
+                                        {
+                                            console.log(this.props.game)
+                                        }
                                     </div>
                                     <div id={'cardNumber'}>
                                         {player.cards.length}

@@ -52,8 +52,10 @@ class Cards extends Component {
                         <div className="flex">
                             {
                                 this.props.game.last_card ?
-                                    <div id={'card_block'} onClick={this.onTakeClick}>
-                                        hehe
+                                    <div id={'card_block'}>
+                                        <div id={'take_card'} onClick={this.onTakeClick}>
+                                            Take card
+                                        </div>
                                     </div>
                                     : ''
                             }
