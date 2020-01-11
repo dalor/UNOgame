@@ -1,6 +1,6 @@
 const http = require('http')
 const webSocketServer = require('websocket').server
-const handlers = require('./handlers')
+const handlers = require('./server/handlers')
 const webSocketsServerPort = process.env.PORT //process.env.PORT
 const server = http.createServer()
 

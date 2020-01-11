@@ -1,4 +1,4 @@
-let connection = new WebSocket('ws://unog.herokuapp.com/');
+let connection = new WebSocket('ws://discount-space.herokuapp.com');
 
 connection.onopen = function () {
 };
