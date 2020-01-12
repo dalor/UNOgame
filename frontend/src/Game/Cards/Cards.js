@@ -24,7 +24,7 @@ class Cards extends Component {
         {
             console.log('Card used', id);
         }
-        connection.send(JSON.stringify({type: "PUT_CARD", card: {id: id}, player: {id: this.props.current_user.id}}));
+        connection.send(JSON.stringify({type: "PUT_CARD", card: {id: id}, player: this.props.current_user.id, game: {id:this.props.game.id}}));
     }
 
     onBluffClick() {
